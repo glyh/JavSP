@@ -17,7 +17,7 @@ def re_escape(s: str) -> str:
 
 def mei_path(path: str) -> str:
     """获取一个随代码打包的文件在解压后的路径"""
-    if getattr(sys, "frozen", False):
+    if getattr(sys, 'frozen', False):
         return path
     else:
         path_joined = Path(__file__).parent.parent.parent / path

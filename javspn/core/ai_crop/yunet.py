@@ -58,7 +58,7 @@ class YuNet:
     
 piccfg = cfg.Picture
 if piccfg == None:
-    raise Exception("Missing `Picture` field from config.ini")
+    raise Exception("Missing `Picture` field from config")
 model_path = piccfg.yunet_model
 if model_path == None:
     raise Exception("Missing `yunet_model` for ai crop backend yunet")

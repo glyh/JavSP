@@ -71,7 +71,7 @@ class PPHumanSeg:
 
 piccfg = cfg.Picture
 if piccfg == None:
-    raise Exception("Missing `Picture` field from config.ini")
+    raise Exception("Missing `Picture` field from config")
 model_path = piccfg.pphumanseg_model
 if model_path == None:
     raise Exception("Missing `pphumanseg_model` for ai crop backend pphumanseg")

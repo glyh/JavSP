@@ -1,28 +1,29 @@
-"""百度AI开放平台的人体分析方案""" import os
+"""百度AI开放平台的人体分析方案"""
+import os
 import sys
 import json
 import random
 import logging
 from hashlib import md5
 from datetime import datetime
+from javspn.core.lib import mei_path
 
 from aip import AipBodyAnalysis
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from javspn.core.config import cfg, rel_path_from_exe
+from javspn.core.config import cfg
 
 logger = logging.getLogger(__name__)
-
 
 class AipClient():
     def __init__(self) -> None:
         piccfg = cfg.Picture
         # 保存已经识别过的图片的结果，减少请求次数
-        self.file = rel_path_from_exe('data/baidu_aip.cache.json')
+        self.file = mei_path('cache/baidu_aip/cache.json')
         dir_path = os.path.dirname(self.file)
         if (not os.path.exists(dir_path)) and piccfg.ai_engine == 'baidu':
-            os.makedirs(dir_path)
+            os.makedirs(dir_path, exist_ok=True)
         if os.path.exists(self.file):
             with open(self.file, 'rt', encoding='utf-8') as f:
                 self.cache = json.load(f)

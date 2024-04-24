@@ -10,7 +10,7 @@ proj_root = os.path.abspath(os.path.dirname(__file__))
 
 
 include_files: List[Tuple[str, str]] = [
-    (f"{proj_root}/javspn/core/config.ini", 'config.ini'),
+    (f"{proj_root}/config/cfg.py", 'cfg.py'),
     (f"{proj_root}/data", 'data'),
     (f"{proj_root}/image", 'image')
 ]

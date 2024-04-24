@@ -34,7 +34,7 @@ logger = logging.getLogger('main')
 
 from javspn.core.lib import mei_path
 from javspn.core.nfo import write_nfo
-from javspn.core.config import cfg, args
+from javspn.core.config import cfg
 from javspn.core.file import *
 from javspn.core.func import *
 from javspn.core.image import *
@@ -643,9 +643,9 @@ def error_exit(success, err_info):
 
 def sys_exit(code):
     # 脚本退出机制：检查是否需要关机 → 若不需要，检查是否需要保持当前窗口
-    if args.shutdown:
+    if cfg.Other.shutdown:
         shutdown()
-    elif not (args.auto_exit or cfg.Other.auto_exit):
+    elif not cfg.Other.auto_exit:
         os.system('pause')
     # 最后传退出码退出
     sys.exit(code)
@@ -654,7 +654,7 @@ def only_fetch():
     # 1. 读取缓存文件
     movie_list: List[dict] = []
     movies: List[Movie] = []
-    with open(args.data_cache_file, encoding='utf-8') as f:
+    with open(cfg.Other.data_cache_file, encoding='utf-8') as f:
         movie_list = json.load(f)
     # 2. 重新实例化Movie
     if len(movie_list) == 0:
@@ -673,7 +673,7 @@ def only_fetch():
         store_movies.append(d)
     json_str = json.dumps(store_movies, ensure_ascii=False)
     # 打开文件进行写入
-    with open(args.data_cache_file, 'w', encoding='utf-8') as file:
+    with open(cfg.Other.data_cache_file, 'w', encoding='utf-8') as file:
         file.write(json_str)  # 将数据写入文件
     return 0
 
@@ -686,7 +686,7 @@ def entry():
     # 检查更新
     version_info = 'JavSP ' + getattr(sys, 'javsp_version', '未知版本/从代码运行')
     logger.debug(version_info.center(60, '='))
-    if not args.no_update:
+    if not cfg.Other.no_update:
         check_update(cfg.Other.check_update)
     root = get_scan_dir(cfg.File.scan_dir)
     error_exit(root, '未选择要扫描的文件夹')
@@ -694,15 +694,15 @@ def entry():
     import_crawlers(cfg)
     os.chdir(root)
 
-    if args.only_fetch == True:
+    if cfg.Other.only_fetch == True:
         #仅刮削
         sys_exit(only_fetch())
 
     print(f'扫描影片文件...')
-    recognized = scan_movies(root, args.only_scan, args.data_cache_file)
+    recognized = scan_movies(root, cfg.Other.only_scan, cfg.Other.data_cache_file)
     movie_count = len(recognized)
     # 手动模式下先让用户处理无法识别番号的影片（无论是all还是failed）
-    if args.manual:
+    if cfg.Other.manual:
         recognize_fail = get_failed_when_scan()
         fail_count = len(recognize_fail)
         if fail_count > 0:
@@ -712,11 +712,11 @@ def entry():
         recognize_fail = []
     error_exit(movie_count, '未找到影片文件')
     logger.info(f'扫描影片文件：共找到 {movie_count} 部影片')
-    if args.only_scan == True:
+    if cfg.Other.only_scan == True:
         #仅识别，不刮削
         sys_exit(0)
 
-    if args.manual == 'all':
+    if cfg.Other.manual == 'all':
         reviewMovieID(recognized, root)
     RunNormalMode(recognized + recognize_fail)
 
